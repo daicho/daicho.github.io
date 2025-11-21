@@ -8,34 +8,6 @@ const GameState = {
     payouts: {} // { frameNumber: payoutRatio }
 };
 
-// Cookie管理
-const CookieManager = {
-    save() {
-        const data = {
-            numParticipants: GameState.numParticipants,
-            numWinners: GameState.numWinners,
-            participants: GameState.participants
-        };
-        document.cookie = `gameData=${encodeURIComponent(JSON.stringify(data))}; max-age=${60 * 60 * 24 * 365}; path=/`;
-    },
-    
-    load() {
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === 'gameData') {
-                try {
-                    const data = JSON.parse(decodeURIComponent(value));
-                    return data;
-                } catch (e) {
-                    console.error('Cookie解析エラー:', e);
-                }
-            }
-        }
-        return null;
-    }
-};
-
 // 画面切り替え
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => {
@@ -46,14 +18,20 @@ function showScreen(screenId) {
 
 // タイトル画面の初期化
 function initTitleScreen() {
-    const savedData = CookieManager.load();
-    if (savedData) {
-        GameState.numParticipants = savedData.numParticipants;
-        GameState.numWinners = savedData.numWinners;
-        GameState.participants = savedData.participants || [];
-        
-        document.getElementById('numParticipants').value = GameState.numParticipants;
-        document.getElementById('numWinners').value = GameState.numWinners;
+    // LocalStorageから復元
+    try {
+        const savedData = localStorage.getItem('gameData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            GameState.numParticipants = data.numParticipants;
+            GameState.numWinners = data.numWinners;
+            GameState.participants = data.participants || [];
+            
+            document.getElementById('numParticipants').value = GameState.numParticipants;
+            document.getElementById('numWinners').value = GameState.numWinners;
+        }
+    } catch (e) {
+        console.error('LocalStorage読み込みエラー:', e);
     }
     
     updateParticipantInputs();
@@ -67,17 +45,27 @@ function initTitleScreen() {
             document.getElementById('numWinners').value = GameState.numWinners;
         }
         updateParticipantInputs();
-        CookieManager.save();
     });
     
     document.getElementById('numWinners').addEventListener('input', (e) => {
         const max = GameState.numParticipants;
         GameState.numWinners = Math.max(1, Math.min(max, parseInt(e.target.value) || 1));
         e.target.value = GameState.numWinners;
-        CookieManager.save();
     });
     
     document.getElementById('startGameBtn').addEventListener('click', () => {
+        // LocalStorageに保存
+        try {
+            const data = {
+                numParticipants: GameState.numParticipants,
+                numWinners: GameState.numWinners,
+                participants: GameState.participants
+            };
+            localStorage.setItem('gameData', JSON.stringify(data));
+        } catch (e) {
+            console.error('LocalStorage保存エラー:', e);
+        }
+        
         GameState.frameSelections = {};
         initSelectionScreen();
         showScreen('selectionScreen');
@@ -108,7 +96,6 @@ function updateParticipantInputs() {
         input.addEventListener('input', (e) => {
             GameState.participants[e.target.dataset.index] = e.target.value.trim();
             checkAllParticipantsEntered();
-            CookieManager.save();
         });
         
         div.appendChild(label);
