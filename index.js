@@ -257,40 +257,6 @@ function initResultScreen() {
         payoutsContent.appendChild(div);
     });
     
-    // 結果サマリーの表示
-    const resultSummary = document.getElementById('resultSummary');
-    resultSummary.innerHTML = '<h3>結果一覧</h3>';
-    
-    for (let frame = 1; frame <= GameState.numParticipants; frame++) {
-        const name = GameState.frameSelections[frame];
-        const isWinner = GameState.winners.includes(frame);
-        
-        const div = document.createElement('div');
-        div.className = `result-item ${isWinner ? 'winner' : ''}`;
-        
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'name';
-        nameSpan.textContent = name;
-        
-        const frameSpan = document.createElement('span');
-        frameSpan.className = 'frame';
-        frameSpan.textContent = `枠 ${frame}`;
-        
-        const payoutSpan = document.createElement('span');
-        payoutSpan.className = 'payout';
-        if (isWinner) {
-            const ratio = GameState.payouts[frame];
-            payoutSpan.textContent = ratio === 0 ? '0' : `${Math.round(ratio * 100)}%`;
-        } else {
-            payoutSpan.textContent = '-';
-        }
-        
-        div.appendChild(nameSpan);
-        div.appendChild(frameSpan);
-        div.appendChild(payoutSpan);
-        resultSummary.appendChild(div);
-    }
-    
     // スクラッチカードの初期化
     requestAnimationFrame(() => {
         initScratchCard('canvasWinners');
