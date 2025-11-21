@@ -7,8 +7,8 @@
 
 body {
     font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #e8e8e8;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: #2c3e50;
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -48,8 +48,8 @@ body {
     font-size: 3rem;
     text-align: center;
     margin-bottom: 10px;
-    color: #d4af37;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #c9a42b;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     letter-spacing: 8px;
     font-weight: 700;
 }
@@ -58,7 +58,7 @@ body {
     font-size: 1.2rem;
     text-align: center;
     margin-bottom: 40px;
-    color: #a8a8a8;
+    color: #6c757d;
     font-weight: 300;
     letter-spacing: 3px;
 }
@@ -67,8 +67,8 @@ body {
     font-size: 2rem;
     text-align: center;
     margin-bottom: 30px;
-    color: #d4af37;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    color: #c9a42b;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     letter-spacing: 4px;
 }
 
@@ -80,7 +80,7 @@ body {
 .input-group label {
     display: block;
     margin-bottom: 8px;
-    color: #c0c0c0;
+    color: #495057;
     font-size: 0.95rem;
     font-weight: 500;
 }
@@ -88,19 +88,19 @@ body {
 .input-group input {
     width: 100%;
     padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(212, 175, 55, 0.3);
+    background: #ffffff;
+    border: 2px solid rgba(201, 164, 43, 0.3);
     border-radius: 8px;
-    color: #e8e8e8;
+    color: #2c3e50;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #d4af37;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    border-color: #c9a42b;
+    background: #fffef8;
+    box-shadow: 0 0 10px rgba(201, 164, 43, 0.2);
 }
 
 /* 参加者名入力 */
@@ -115,25 +115,25 @@ body {
 .participant-input label {
     display: block;
     margin-bottom: 6px;
-    color: #b0b0b0;
+    color: #5a6c7d;
     font-size: 0.9rem;
 }
 
 .participant-input input {
     width: 100%;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    background: #ffffff;
+    border: 1px solid rgba(201, 164, 43, 0.3);
     border-radius: 6px;
-    color: #e8e8e8;
+    color: #2c3e50;
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
 
 .participant-input input:focus {
     outline: none;
-    border-color: #d4af37;
-    background: rgba(255, 255, 255, 0.08);
+    border-color: #c9a42b;
+    background: #fffef8;
 }
 
 /* ボタン */
@@ -147,12 +147,12 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 2px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
     background: linear-gradient(135deg, #d4af37 0%, #c9a42b 100%);
-    color: #1a1a2e;
+    color: #ffffff;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -162,22 +162,22 @@ body {
 }
 
 .btn-primary:disabled {
-    background: #4a4a4a;
-    color: #808080;
+    background: #d0d0d0;
+    color: #8a8a8a;
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: #e8e8e8;
-    border: 2px solid rgba(212, 175, 55, 0.3);
+    background: #ffffff;
+    color: #2c3e50;
+    border: 2px solid rgba(201, 164, 43, 0.5);
     margin-top: 20px;
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: #d4af37;
+    background: #fffef8;
+    border-color: #c9a42b;
     transform: translateY(-2px);
 }
 
@@ -190,19 +190,20 @@ body {
 .selection-table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.03);
+    background: #ffffff;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .selection-table thead {
-    background: rgba(212, 175, 55, 0.2);
+    background: rgba(212, 175, 55, 0.15);
 }
 
 .selection-table th {
     padding: 15px;
     text-align: center;
-    color: #d4af37;
+    color: #c9a42b;
     font-weight: 600;
     font-size: 1rem;
     letter-spacing: 1px;
@@ -211,22 +212,22 @@ body {
 .selection-table td {
     padding: 12px;
     text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .selection-table .frame-number {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #d4af37;
+    color: #c9a42b;
 }
 
 .selection-table select {
     width: 100%;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    background: #ffffff;
+    border: 1px solid rgba(201, 164, 43, 0.4);
     border-radius: 6px;
-    color: #e8e8e8;
+    color: #2c3e50;
     font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -234,8 +235,8 @@ body {
 
 .selection-table select:focus {
     outline: none;
-    border-color: #d4af37;
-    background: rgba(255, 255, 255, 0.08);
+    border-color: #c9a42b;
+    background: #fffef8;
 }
 
 /* スクラッチカード */
@@ -254,7 +255,7 @@ body {
 .scratch-section h3 {
     text-align: center;
     margin-bottom: 15px;
-    color: #b8b8b8;
+    color: #495057;
     font-size: 1.1rem;
     font-weight: 500;
     letter-spacing: 2px;
@@ -262,12 +263,13 @@ body {
 
 .scratch-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(212, 175, 55, 0.3);
+    background: #ffffff;
+    border: 2px solid rgba(201, 164, 43, 0.4);
     border-radius: 10px;
     overflow: hidden;
     min-height: 300px;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .scratch-card canvas {
@@ -292,29 +294,30 @@ body {
 
 .scratch-content .winner-item,
 .scratch-content .payout-item {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.12);
     padding: 15px 25px;
     margin: 8px 0;
     border-radius: 8px;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #d4af37;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    color: #c9a42b;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     min-width: 120px;
     text-align: center;
 }
 
 /* 結果サマリー */
 .result-summary {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    background: #ffffff;
+    border: 1px solid rgba(201, 164, 43, 0.3);
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .result-summary h3 {
-    color: #d4af37;
+    color: #c9a42b;
     margin-bottom: 15px;
     font-size: 1.2rem;
     text-align: center;
@@ -326,28 +329,28 @@ body {
     justify-content: space-between;
     padding: 12px 15px;
     margin: 8px 0;
-    background: rgba(255, 255, 255, 0.02);
+    background: #f8f9fa;
     border-radius: 6px;
     border-left: 3px solid transparent;
 }
 
 .result-item.winner {
-    border-left-color: #d4af37;
-    background: rgba(212, 175, 55, 0.08);
+    border-left-color: #c9a42b;
+    background: rgba(212, 175, 55, 0.1);
 }
 
 .result-item .name {
     font-weight: 600;
-    color: #e8e8e8;
+    color: #2c3e50;
 }
 
 .result-item .frame {
-    color: #d4af37;
+    color: #c9a42b;
     font-weight: 600;
 }
 
 .result-item .payout {
-    color: #d4af37;
+    color: #c9a42b;
     font-weight: 700;
     font-size: 1.1rem;
 }
