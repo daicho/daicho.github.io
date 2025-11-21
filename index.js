@@ -305,8 +305,10 @@ function initResultScreen() {
     }
     
     // スクラッチカードの初期化
-    initScratchCard('canvasWinners');
-    initScratchCard('canvasPayouts');
+    requestAnimationFrame(() => {
+        initScratchCard('canvasWinners');
+        initScratchCard('canvasPayouts');
+    });
     
     document.getElementById('backToTitleBtn').addEventListener('click', () => {
         showScreen('titleScreen');
