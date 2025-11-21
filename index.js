@@ -292,9 +292,20 @@ function initScratchCard(canvasId) {
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight;
 
-    // スクラッチ層の描画
+    // スクラッチ層の描画（少しざらついた質感を追加）
     ctx.fillStyle = '#2a2a3e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ノイズを追加してリアルな質感に
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const noise = Math.random() * 15 - 7.5;
+        data[i] += noise;     // R
+        data[i + 1] += noise; // G
+        data[i + 2] += noise; // B
+    }
+    ctx.putImageData(imageData, 0, 0);
 
     // テキスト追加
     ctx.fillStyle = '#606070';
@@ -304,21 +315,142 @@ function initScratchCard(canvasId) {
     ctx.fillText('こすって削る', canvas.width / 2, canvas.height / 2);
 
     let isScratching = false;
+    let lastX = null;
+    let lastY = null;
+    const brushSize = 15; // ブラシサイズ
 
+    // 削りカスのパーティクル配列
+    const particles = [];
+    let particleAnimationId = null;
+
+    // 削る処理（段階的に削れる）
     const scratch = (x, y) => {
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.beginPath();
-        ctx.arc(x, y, 20, 0, Math.PI * 2);
-        ctx.fill();
+        // 一度で完全に削れないように透明度を下げる
+        ctx.globalAlpha = 0.10; // この値を小さくするほど何度もこする必要がある
+
+        // 前回の位置がある場合は線で繋ぐ
+        if (lastX !== null && lastY !== null) {
+            const distance = Math.sqrt((x - lastX) ** 2 + (y - lastY) ** 2);
+            const steps = Math.max(1, Math.floor(distance / 3)); // 細かく補間
+
+            for (let i = 0; i <= steps; i++) {
+                const t = i / steps;
+                const px = lastX + (x - lastX) * t;
+                const py = lastY + (y - lastY) * t;
+
+                // ランダムな揺らぎを追加してリアルな削り跡に
+                const wobble = Math.random() * 3 - 1.5;
+                ctx.beginPath();
+                ctx.arc(px + wobble, py + wobble, brushSize + Math.random() * 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 削りカスのパーティクル生成（削りながら都度発生）
+                if (Math.random() < 0.2) {
+                    particles.push({
+                        x: px,
+                        y: py,
+                        vx: (Math.random() - 0.5) * 3,
+                        vy: Math.random() * 1.5 + 0.5,
+                        size: Math.random() * 3 + 1,
+                        alpha: 0.8,
+                        rotation: Math.random() * Math.PI * 2,
+                        rotationSpeed: (Math.random() - 0.5) * 0.2
+                    });
+                }
+            }
+        } else {
+            // 初回は単純に円を描画
+            ctx.beginPath();
+            ctx.arc(x, y, brushSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.globalAlpha = 1.0; // 透明度を戻す
+        lastX = x;
+        lastY = y;
+
+        // パーティクルアニメーションを開始（まだ動いていなければ）
+        if (particleAnimationId === null && particles.length > 0) {
+            animateParticles();
+        }
     };
 
+    // 削りカスのアニメーション（削りながら都度実行）
+    const animateParticles = () => {
+        const overlay = canvas.parentElement.querySelector('.scratch-particles');
+        if (!overlay) {
+            particleAnimationId = null;
+            return;
+        }
+
+        const overlayCtx = overlay.getContext('2d');
+        overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.15; // 重力
+            p.vx *= 0.98; // 空気抵抗
+            p.alpha -= 0.015;
+            p.rotation += p.rotationSpeed;
+
+            if (p.alpha <= 0 || p.y > canvas.height + 10) {
+                particles.splice(i, 1);
+                continue;
+            }
+
+            overlayCtx.save();
+            overlayCtx.globalAlpha = p.alpha;
+            overlayCtx.fillStyle = '#3a3a4e';
+            overlayCtx.translate(p.x, p.y);
+            overlayCtx.rotate(p.rotation);
+            overlayCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            overlayCtx.restore();
+        }
+
+        if (particles.length > 0 || isScratching) {
+            particleAnimationId = requestAnimationFrame(animateParticles);
+        } else {
+            particleAnimationId = null;
+        }
+    };
+
+    // パーティクル用のキャンバスを追加
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.className = 'scratch-particles';
+    particleCanvas.width = canvas.width;
+    particleCanvas.height = canvas.height;
+    particleCanvas.style.position = 'absolute';
+    particleCanvas.style.top = '0';
+    particleCanvas.style.left = '0';
+    particleCanvas.style.width = '100%';
+    particleCanvas.style.height = '100%';
+    particleCanvas.style.pointerEvents = 'none';
+    particleCanvas.style.zIndex = '3';
+    canvas.parentElement.appendChild(particleCanvas);
+
     // マウスイベント
-    canvas.addEventListener('mousedown', () => {
+    canvas.addEventListener('mousedown', (e) => {
         isScratching = true;
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+        scratch(lastX, lastY);
     });
 
     canvas.addEventListener('mouseup', () => {
         isScratching = false;
+        lastX = null;
+        lastY = null;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        isScratching = false;
+        lastX = null;
+        lastY = null;
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -334,11 +466,18 @@ function initScratchCard(canvasId) {
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         isScratching = true;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        lastX = touch.clientX - rect.left;
+        lastY = touch.clientY - rect.top;
+        scratch(lastX, lastY);
     });
 
     canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         isScratching = false;
+        lastX = null;
+        lastY = null;
     });
 
     canvas.addEventListener('touchmove', (e) => {
