@@ -214,23 +214,31 @@ function determineRaceResults() {
 
     GameState.winners.sort((a, b) => a - b);
 
-    // 配当比率の決定
+    // 配当比率の決定（合計が1になるように分配）
     GameState.payouts = {};
-    const N = GameState.numWinners;
-    const ratios = [];
+    const numParticipants = GameState.numParticipants; // 分母は参加者数
+    const numWinners = GameState.numWinners; // 勝者枠数
 
-    for (let i = 0; i <= N; i++) {
-        ratios.push(i / N);
+    // 合計がnumParticipantsになるnumWinners個の非負整数を生成
+    const numerators = [];
+    let remaining = numParticipants;
+
+    for (let i = 0; i < numWinners - 1; i++) {
+        const value = Math.floor(Math.random() * (remaining + 1));
+        numerators.push(value);
+        remaining -= value;
     }
+    numerators.push(remaining); // 最後は残り全部
 
     // Fisher-Yatesシャッフル
-    for (let i = ratios.length - 1; i > 0; i--) {
+    for (let i = numerators.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [ratios[i], ratios[j]] = [ratios[j], ratios[i]];
+        [numerators[i], numerators[j]] = [numerators[j], numerators[i]];
     }
 
+    // 各勝者枠に配当比率を割り当て
     GameState.winners.forEach((frame, index) => {
-        GameState.payouts[frame] = ratios[index];
+        GameState.payouts[frame] = numerators[index] / numParticipants;
     });
 }
 
@@ -253,7 +261,13 @@ function initResultScreen() {
         const div = document.createElement('div');
         div.className = 'payout-item';
         const ratio = GameState.payouts[frame];
-        div.textContent = ratio === 0 ? '0' : `${Math.round(ratio * 100)}%`;
+        if (ratio === 0) {
+            div.textContent = '0';
+        } else {
+            const numParticipants = GameState.numParticipants;
+            const numerator = Math.round(ratio * numParticipants);
+            div.textContent = `${numerator}/${numParticipants}`;
+        }
         payoutsContent.appendChild(div);
     });
 
