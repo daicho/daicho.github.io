@@ -215,25 +215,26 @@ function determineRaceResults() {
     GameState.winners.sort((a, b) => a - b);
 
     // 配当比率の決定（合計が1になるように分配）
+    // Stars and Bars Methodを使用
     GameState.payouts = {};
     const numParticipants = GameState.numParticipants; // 分母は参加者数
     const numWinners = GameState.numWinners; // 勝者枠数
 
-    // 合計がnumParticipantsになるnumWinners個の非負整数を生成
-    const numerators = [];
-    let remaining = numParticipants;
+    // Stars and Bars Method:
+    // 0～Nの範囲でM-1個の区切り位置をランダムに選ぶ（重複あり）
+    const dividers = [0, numParticipants]; // 両端を追加
 
     for (let i = 0; i < numWinners - 1; i++) {
-        const value = Math.floor(Math.random() * (remaining + 1));
-        numerators.push(value);
-        remaining -= value;
+        dividers.push(Math.floor(Math.random() * (numParticipants + 1)));
     }
-    numerators.push(remaining); // 最後は残り全部
 
-    // Fisher-Yatesシャッフル
-    for (let i = numerators.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [numerators[i], numerators[j]] = [numerators[j], numerators[i]];
+    // ソート
+    dividers.sort((a, b) => a - b);
+
+    // 差分を取って配当の分子を求める
+    const numerators = [];
+    for (let i = 1; i < dividers.length; i++) {
+        numerators.push(dividers[i] - dividers[i - 1]);
     }
 
     // 各勝者枠に配当比率を割り当て
