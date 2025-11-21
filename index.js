@@ -26,16 +26,16 @@ function initTitleScreen() {
             GameState.numParticipants = data.numParticipants;
             GameState.numWinners = data.numWinners;
             GameState.participants = data.participants || [];
-            
+
             document.getElementById('numParticipants').value = GameState.numParticipants;
             document.getElementById('numWinners').value = GameState.numWinners;
         }
     } catch (e) {
         console.error('LocalStorage読み込みエラー:', e);
     }
-    
+
     updateParticipantInputs();
-    
+
     // イベントリスナー
     document.getElementById('numParticipants').addEventListener('input', (e) => {
         GameState.numParticipants = Math.max(1, parseInt(e.target.value) || 1);
@@ -46,13 +46,13 @@ function initTitleScreen() {
         }
         updateParticipantInputs();
     });
-    
+
     document.getElementById('numWinners').addEventListener('input', (e) => {
         const max = GameState.numParticipants;
         GameState.numWinners = Math.max(1, Math.min(max, parseInt(e.target.value) || 1));
         e.target.value = GameState.numWinners;
     });
-    
+
     document.getElementById('startGameBtn').addEventListener('click', () => {
         // LocalStorageに保存
         try {
@@ -65,7 +65,7 @@ function initTitleScreen() {
         } catch (e) {
             console.error('LocalStorage保存エラー:', e);
         }
-        
+
         GameState.frameSelections = {};
         initSelectionScreen();
         showScreen('selectionScreen');
@@ -76,35 +76,35 @@ function initTitleScreen() {
 function updateParticipantInputs() {
     const container = document.getElementById('participantNames');
     container.innerHTML = '';
-    
+
     const currentParticipants = [...GameState.participants];
     GameState.participants = [];
-    
+
     for (let i = 0; i < GameState.numParticipants; i++) {
         const div = document.createElement('div');
         div.className = 'participant-input';
-        
+
         const label = document.createElement('label');
         label.textContent = `参加者 ${i + 1}`;
-        
+
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `参加者${i + 1}の名前`;
         input.value = currentParticipants[i] || '';
         input.dataset.index = i;
-        
+
         input.addEventListener('input', (e) => {
             GameState.participants[e.target.dataset.index] = e.target.value.trim();
             checkAllParticipantsEntered();
         });
-        
+
         div.appendChild(label);
         div.appendChild(input);
         container.appendChild(div);
-        
+
         GameState.participants[i] = currentParticipants[i] || '';
     }
-    
+
     checkAllParticipantsEntered();
 }
 
@@ -118,52 +118,52 @@ function checkAllParticipantsEntered() {
 function initSelectionScreen() {
     const tbody = document.querySelector('#selectionTable tbody');
     tbody.innerHTML = '';
-    
+
     for (let i = 1; i <= GameState.numParticipants; i++) {
         const tr = document.createElement('tr');
-        
+
         const tdFrame = document.createElement('td');
         tdFrame.className = 'frame-number';
         tdFrame.textContent = i;
-        
+
         const tdSelect = document.createElement('td');
         const select = document.createElement('select');
         select.dataset.frame = i;
-        
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = '選択してください';
         select.appendChild(defaultOption);
-        
+
         GameState.participants.forEach(name => {
             const option = document.createElement('option');
             option.value = name;
             option.textContent = name;
             select.appendChild(option);
         });
-        
+
         select.addEventListener('change', (e) => {
             const frame = parseInt(e.target.dataset.frame);
             const selectedName = e.target.value;
-            
+
             if (selectedName) {
                 GameState.frameSelections[frame] = selectedName;
             } else {
                 delete GameState.frameSelections[frame];
             }
-            
+
             updateSelectionOptions();
             checkAllFramesSelected();
         });
-        
+
         tdSelect.appendChild(select);
         tr.appendChild(tdFrame);
         tr.appendChild(tdSelect);
         tbody.appendChild(tr);
     }
-    
+
     checkAllFramesSelected();
-    
+
     document.getElementById('startRaceBtn').addEventListener('click', () => {
         determineRaceResults();
         initResultScreen();
@@ -175,14 +175,14 @@ function initSelectionScreen() {
 function updateSelectionOptions() {
     const selectedNames = new Set(Object.values(GameState.frameSelections));
     const selects = document.querySelectorAll('#selectionTable select');
-    
+
     selects.forEach(select => {
         const currentValue = select.value;
         const frame = parseInt(select.dataset.frame);
-        
+
         Array.from(select.options).forEach(option => {
             if (option.value === '') return;
-            
+
             if (selectedNames.has(option.value) && option.value !== currentValue) {
                 option.disabled = true;
                 option.style.display = 'none';
@@ -205,30 +205,30 @@ function determineRaceResults() {
     // 勝者枠をランダムに選択
     const frames = Array.from({ length: GameState.numParticipants }, (_, i) => i + 1);
     GameState.winners = [];
-    
+
     for (let i = 0; i < GameState.numWinners; i++) {
         const randomIndex = Math.floor(Math.random() * frames.length);
         GameState.winners.push(frames[randomIndex]);
         frames.splice(randomIndex, 1);
     }
-    
+
     GameState.winners.sort((a, b) => a - b);
-    
+
     // 配当比率の決定
     GameState.payouts = {};
     const N = GameState.numWinners;
     const ratios = [];
-    
+
     for (let i = 0; i <= N; i++) {
         ratios.push(i / N);
     }
-    
+
     // Fisher-Yatesシャッフル
     for (let i = ratios.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [ratios[i], ratios[j]] = [ratios[j], ratios[i]];
     }
-    
+
     GameState.winners.forEach((frame, index) => {
         GameState.payouts[frame] = ratios[index];
     });
@@ -245,7 +245,7 @@ function initResultScreen() {
         div.textContent = `枠 ${frame}`;
         winnersContent.appendChild(div);
     });
-    
+
     // 配当比率の表示
     const payoutsContent = document.getElementById('payoutsContent');
     payoutsContent.innerHTML = '';
@@ -256,13 +256,13 @@ function initResultScreen() {
         div.textContent = ratio === 0 ? '0' : `${Math.round(ratio * 100)}%`;
         payoutsContent.appendChild(div);
     });
-    
+
     // スクラッチカードの初期化
     requestAnimationFrame(() => {
         initScratchCard('canvasWinners');
         initScratchCard('canvasPayouts');
     });
-    
+
     document.getElementById('backToTitleBtn').addEventListener('click', () => {
         showScreen('titleScreen');
     }, { once: true });
@@ -272,41 +272,41 @@ function initResultScreen() {
 function initScratchCard(canvasId) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
-    
+
     // キャンバスサイズを親要素に合わせる
     const parent = canvas.parentElement;
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight;
-    
+
     // スクラッチ層の描画
     ctx.fillStyle = '#2a2a3e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     // テキスト追加
     ctx.fillStyle = '#606070';
     ctx.font = '20px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('こすって削る', canvas.width / 2, canvas.height / 2);
-    
+
     let isScratching = false;
-    
+
     const scratch = (x, y) => {
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();
         ctx.arc(x, y, 20, 0, Math.PI * 2);
         ctx.fill();
     };
-    
+
     // マウスイベント
     canvas.addEventListener('mousedown', () => {
         isScratching = true;
     });
-    
+
     canvas.addEventListener('mouseup', () => {
         isScratching = false;
     });
-    
+
     canvas.addEventListener('mousemove', (e) => {
         if (isScratching) {
             const rect = canvas.getBoundingClientRect();
@@ -315,18 +315,18 @@ function initScratchCard(canvasId) {
             scratch(x, y);
         }
     });
-    
+
     // タッチイベント
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         isScratching = true;
     });
-    
+
     canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         isScratching = false;
     });
-    
+
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
         if (isScratching) {
