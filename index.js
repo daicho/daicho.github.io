@@ -330,9 +330,6 @@ function initScratchCard(canvasId) {
         ctx.beginPath();
         ctx.arc(x, y, 20, 0, Math.PI * 2);
         ctx.fill();
-        
-        // 削った割合をチェック
-        checkScratchProgress(canvas, ctx);
     };
     
     // マウスイベント
@@ -374,27 +371,6 @@ function initScratchCard(canvasId) {
             scratch(x, y);
         }
     });
-}
-
-// スクラッチ進捗チェック
-function checkScratchProgress(canvas, ctx) {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = imageData.data;
-    let transparentPixels = 0;
-    
-    for (let i = 3; i < pixels.length; i += 4) {
-        if (pixels[i] < 128) {
-            transparentPixels++;
-        }
-    }
-    
-    const totalPixels = pixels.length / 4;
-    const scratchedRatio = transparentPixels / totalPixels;
-    
-    // 50%以上削れたら全て削除
-    if (scratchedRatio > 0.5) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
 }
 
 // 初期化
