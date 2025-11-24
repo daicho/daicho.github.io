@@ -346,6 +346,63 @@ body {
     text-align: center;
 }
 
+/* 枠選択情報 */
+.frame-selection-info {
+    margin-bottom: 30px;
+    background: #ffffff;
+    border: 2px solid rgba(201, 164, 43, 0.3);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.frame-selection-info h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #495057;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.frame-selection-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.frame-selection-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 175, 55, 0.08);
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.frame-selection-item:hover {
+    background: rgba(212, 175, 55, 0.15);
+    transform: translateY(-1px);
+}
+
+.frame-selection-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #c9a42b;
+    min-width: 30px;
+    text-align: center;
+}
+
+.frame-selection-name {
+    font-size: 0.95rem;
+    color: #2c3e50;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
     .title {
@@ -368,6 +425,10 @@ body {
 
     .container {
         padding: 20px 15px;
+    }
+
+    .frame-selection-list {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
 }
 

@@ -320,6 +320,27 @@ function initResultScreen() {
         payoutsContent.appendChild(div);
     });
 
+    // 枠選択情報の表示
+    const frameSelectionList = document.getElementById('frameSelectionList');
+    frameSelectionList.innerHTML = '';
+    for (let frame = 1; frame <= GameState.numParticipants; frame++) {
+        const participantName = GameState.frameSelections[frame] || '未選択';
+        const div = document.createElement('div');
+        div.className = 'frame-selection-item';
+        
+        const frameNumber = document.createElement('span');
+        frameNumber.className = 'frame-selection-number';
+        frameNumber.textContent = frame;
+        
+        const participantSpan = document.createElement('span');
+        participantSpan.className = 'frame-selection-name';
+        participantSpan.textContent = participantName;
+        
+        div.appendChild(frameNumber);
+        div.appendChild(participantSpan);
+        frameSelectionList.appendChild(div);
+    }
+
     // スクラッチカードの初期化
     requestAnimationFrame(() => {
         initScratchCard('canvasWinners');
