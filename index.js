@@ -2,7 +2,8 @@
 const GameState = {
     numParticipants: 8,
     numWinners: 3,
-    participants: [],
+    participants: [], // 現在表示されている参加者名
+    allParticipants: {}, // すべての入力内容を保持 { index: name }
     frameSelections: {}, // { frameNumber: participantName }
     winners: [], // 勝者枠番号の配列
     payouts: {} // { frameNumber: payoutRatio }
@@ -26,6 +27,14 @@ function initTitleScreen() {
             GameState.numParticipants = data.numParticipants;
             GameState.numWinners = data.numWinners;
             GameState.participants = data.participants || [];
+            
+            // 保存された参加者をallParticipantsに復元
+            GameState.allParticipants = {};
+            GameState.participants.forEach((name, index) => {
+                if (name) {
+                    GameState.allParticipants[index] = name;
+                }
+            });
 
             document.getElementById('numParticipants').value = GameState.numParticipants;
             document.getElementById('numWinners').value = GameState.numWinners;
@@ -38,6 +47,9 @@ function initTitleScreen() {
 
     // イベントリスナー
     document.getElementById('numParticipants').addEventListener('input', (e) => {
+        // 入力欄から現在の値を取得してGameStateに保存
+        saveCurrentParticipantInputs();
+        
         GameState.numParticipants = Math.max(1, parseInt(e.target.value) || 1);
         document.getElementById('numWinners').max = GameState.numParticipants;
         if (GameState.numWinners > GameState.numParticipants) {
@@ -54,6 +66,9 @@ function initTitleScreen() {
     });
 
     document.getElementById('startGameBtn').addEventListener('click', () => {
+        // 最新の入力内容を保存
+        saveCurrentParticipantInputs();
+        
         // LocalStorageに保存
         try {
             const data = {
@@ -72,12 +87,32 @@ function initTitleScreen() {
     });
 }
 
+// 現在の入力欄の値をGameStateに保存
+function saveCurrentParticipantInputs() {
+    const inputs = document.querySelectorAll('#participantNames input');
+    inputs.forEach((input, index) => {
+        const value = input.value.trim();
+        if (value) {
+            GameState.allParticipants[index] = value;
+        } else {
+            delete GameState.allParticipants[index];
+        }
+        GameState.participants[index] = value;
+    });
+}
+
 // 参加者名入力欄の更新
 function updateParticipantInputs() {
     const tbody = document.getElementById('participantNames');
+    
+    // 入力欄の数が変わる場合のみ再生成
+    const currentInputCount = tbody.querySelectorAll('tr').length;
+    if (currentInputCount === GameState.numParticipants) {
+        // 入力欄の数が同じ場合は何もしない（入力内容を保持）
+        return;
+    }
+    
     tbody.innerHTML = '';
-
-    const currentParticipants = [...GameState.participants];
     GameState.participants = [];
 
     for (let i = 0; i < GameState.numParticipants; i++) {
@@ -91,11 +126,22 @@ function updateParticipantInputs() {
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `参加者${i + 1}の名前`;
-        input.value = currentParticipants[i] || '';
+        // allParticipantsから入力内容を復元
+        input.value = GameState.allParticipants[i] || '';
         input.dataset.index = i;
 
         input.addEventListener('input', (e) => {
-            GameState.participants[e.target.dataset.index] = e.target.value.trim();
+            const index = parseInt(e.target.dataset.index);
+            const value = e.target.value.trim();
+            GameState.participants[index] = value;
+            
+            // allParticipantsにも保存
+            if (value) {
+                GameState.allParticipants[index] = value;
+            } else {
+                delete GameState.allParticipants[index];
+            }
+            
             checkAllParticipantsEntered();
         });
 
@@ -104,7 +150,7 @@ function updateParticipantInputs() {
         tr.appendChild(tdName);
         tbody.appendChild(tr);
 
-        GameState.participants[i] = currentParticipants[i] || '';
+        GameState.participants[i] = GameState.allParticipants[i] || '';
     }
 
     checkAllParticipantsEntered();
