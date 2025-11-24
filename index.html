@@ -22,8 +22,18 @@
                 <input type="number" id="numWinners" min="1" value="3">
             </div>
 
-            <div id="participantNames" class="participant-names">
-                <!-- 参加者名入力欄が動的に生成される -->
+            <div class="participant-table-wrapper">
+                <table id="participantTable" class="participant-table">
+                    <thead>
+                        <tr>
+                            <th>番号</th>
+                            <th>名前</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantNames">
+                        <!-- 参加者名入力欄が動的に生成される -->
+                    </tbody>
+                </table>
             </div>
 
             <button id="startGameBtn" class="btn btn-primary" disabled>ゲーム開始</button>

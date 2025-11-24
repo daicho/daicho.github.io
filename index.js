@@ -74,19 +74,20 @@ function initTitleScreen() {
 
 // 参加者名入力欄の更新
 function updateParticipantInputs() {
-    const container = document.getElementById('participantNames');
-    container.innerHTML = '';
+    const tbody = document.getElementById('participantNames');
+    tbody.innerHTML = '';
 
     const currentParticipants = [...GameState.participants];
     GameState.participants = [];
 
     for (let i = 0; i < GameState.numParticipants; i++) {
-        const div = document.createElement('div');
-        div.className = 'participant-input';
+        const tr = document.createElement('tr');
 
-        const label = document.createElement('label');
-        label.textContent = `参加者${i + 1}`;
+        const tdNumber = document.createElement('td');
+        tdNumber.textContent = i + 1;
+        tdNumber.className = 'number-cell';
 
+        const tdName = document.createElement('td');
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `参加者${i + 1}の名前`;
@@ -98,9 +99,10 @@ function updateParticipantInputs() {
             checkAllParticipantsEntered();
         });
 
-        div.appendChild(label);
-        div.appendChild(input);
-        container.appendChild(div);
+        tdName.appendChild(input);
+        tr.appendChild(tdNumber);
+        tr.appendChild(tdName);
+        tbody.appendChild(tr);
 
         GameState.participants[i] = currentParticipants[i] || '';
     }
