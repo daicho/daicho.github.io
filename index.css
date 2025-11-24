@@ -179,6 +179,17 @@ body {
     background: #fffef8;
 }
 
+.participant-table input.duplicate-error {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.participant-table input.duplicate-error:focus {
+    border-color: #dc3545;
+    background: #fff5f5;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
+}
+
 /* ボタン */
 .btn {
     width: 100%;

@@ -170,6 +170,7 @@ function updateParticipantInputs() {
                 delete GameState.allParticipants[index];
             }
             
+            checkDuplicateNames();
             checkAllParticipantsEntered();
         });
 
@@ -181,13 +182,45 @@ function updateParticipantInputs() {
         GameState.participants[i] = GameState.allParticipants[i] || '';
     }
 
+    checkDuplicateNames();
     checkAllParticipantsEntered();
+}
+
+// 参加者名の重複をチェック
+function checkDuplicateNames() {
+    const inputs = document.querySelectorAll('#participantNames input');
+    const nameCount = {};
+    const duplicateNames = new Set();
+    
+    // 入力された名前をカウント（空文字列は除外）
+    inputs.forEach(input => {
+        const name = input.value.trim();
+        if (name) {
+            nameCount[name] = (nameCount[name] || 0) + 1;
+            if (nameCount[name] > 1) {
+                duplicateNames.add(name);
+            }
+        }
+    });
+    
+    // 重複している入力欄にエラースタイルを適用
+    inputs.forEach(input => {
+        const name = input.value.trim();
+        if (name && duplicateNames.has(name)) {
+            input.classList.add('duplicate-error');
+        } else {
+            input.classList.remove('duplicate-error');
+        }
+    });
+    
+    return duplicateNames.size === 0;
 }
 
 // 全参加者名が入力されているかチェック
 function checkAllParticipantsEntered() {
     const allEntered = GameState.participants.every(name => name.length > 0);
-    document.getElementById('startGameBtn').disabled = !allEntered;
+    const noDuplicates = checkDuplicateNames();
+    document.getElementById('startGameBtn').disabled = !(allEntered && noDuplicates);
 }
 
 // 枠選択画面の初期化
