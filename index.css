@@ -245,18 +245,18 @@ body {
     text-align: center;
     color: #c9a42b;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1rem;
     letter-spacing: 1px;
 }
 
 .selection-table td {
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .selection-table .frame-number {
-    font-size: 2rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #c9a42b;
 }
@@ -408,11 +408,6 @@ body {
     .title {
         font-size: 2.5rem;
         letter-spacing: 6px;
-    }
-
-    .subtitle {
-        font-size: 1rem;
-        letter-spacing: 2px;
     }
 
     .scratch-container {
