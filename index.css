@@ -87,7 +87,8 @@ body {
     font-weight: 600;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
     padding: 12px 15px;
     background: #ffffff;
@@ -96,9 +97,11 @@ body {
     color: #2c3e50;
     font-size: 1rem;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group select:focus {
     outline: none;
     border-color: #c9a42b;
     background: #fffef8;

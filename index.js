@@ -19,6 +19,16 @@ function showScreen(screenId) {
 
 // タイトル画面の初期化
 function initTitleScreen() {
+    // 参加者数の選択肢を生成（1～100）
+    const numParticipantsSelect = document.getElementById('numParticipants');
+    numParticipantsSelect.innerHTML = '';
+    for (let i = 1; i <= 100; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        numParticipantsSelect.appendChild(option);
+    }
+
     // LocalStorageから復元
     try {
         const savedData = localStorage.getItem('gameData');
@@ -36,33 +46,31 @@ function initTitleScreen() {
                 }
             });
 
-            document.getElementById('numParticipants').value = GameState.numParticipants;
-            document.getElementById('numWinners').value = GameState.numWinners;
+            numParticipantsSelect.value = GameState.numParticipants;
+        } else {
+            numParticipantsSelect.value = 8; // デフォルト値
         }
     } catch (e) {
         console.error('LocalStorage読み込みエラー:', e);
+        numParticipantsSelect.value = 8; // デフォルト値
     }
 
+    // 勝者枠数の選択肢を更新
+    updateWinnersSelect();
     updateParticipantInputs();
 
     // イベントリスナー
-    document.getElementById('numParticipants').addEventListener('input', (e) => {
+    document.getElementById('numParticipants').addEventListener('change', (e) => {
         // 入力欄から現在の値を取得してGameStateに保存
         saveCurrentParticipantInputs();
         
-        GameState.numParticipants = Math.max(1, parseInt(e.target.value) || 1);
-        document.getElementById('numWinners').max = GameState.numParticipants;
-        if (GameState.numWinners > GameState.numParticipants) {
-            GameState.numWinners = GameState.numParticipants;
-            document.getElementById('numWinners').value = GameState.numWinners;
-        }
+        GameState.numParticipants = parseInt(e.target.value);
+        updateWinnersSelect();
         updateParticipantInputs();
     });
 
-    document.getElementById('numWinners').addEventListener('input', (e) => {
-        const max = GameState.numParticipants;
-        GameState.numWinners = Math.max(1, Math.min(max, parseInt(e.target.value) || 1));
-        e.target.value = GameState.numWinners;
+    document.getElementById('numWinners').addEventListener('change', (e) => {
+        GameState.numWinners = parseInt(e.target.value);
     });
 
     document.getElementById('startGameBtn').addEventListener('click', () => {
@@ -85,6 +93,26 @@ function initTitleScreen() {
         initSelectionScreen();
         showScreen('selectionScreen');
     });
+}
+
+// 勝者枠数の選択肢を更新
+function updateWinnersSelect() {
+    const numWinnersSelect = document.getElementById('numWinners');
+    numWinnersSelect.innerHTML = '';
+    
+    for (let i = 1; i <= GameState.numParticipants; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        numWinnersSelect.appendChild(option);
+    }
+    
+    // 現在の勝者枠数が新しい参加者数を超える場合は調整
+    if (GameState.numWinners > GameState.numParticipants) {
+        GameState.numWinners = GameState.numParticipants;
+    }
+    
+    numWinnersSelect.value = GameState.numWinners;
 }
 
 // 現在の入力欄の値をGameStateに保存

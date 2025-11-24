@@ -15,12 +15,16 @@
             <div class="input-row">
                 <div class="input-group">
                     <label for="numParticipants">参加者数</label>
-                    <input type="number" id="numParticipants" min="1" max="100" value="8">
+                    <select id="numParticipants">
+                        <!-- 1～100の選択肢が動的に生成される -->
+                    </select>
                 </div>
 
                 <div class="input-group">
                     <label for="numWinners">勝者枠数</label>
-                    <input type="number" id="numWinners" min="1" value="3">
+                    <select id="numWinners">
+                        <!-- 1～参加者数の選択肢が動的に生成される -->
+                    </select>
                 </div>
             </div>
 
