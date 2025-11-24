@@ -73,6 +73,17 @@ body {
 }
 
 /* 入力グループ */
+.input-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.input-row .input-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
 .input-group {
     margin-bottom: 25px;
 }
