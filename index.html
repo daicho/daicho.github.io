@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>紙競馬 - ダービーレースカード</title>
+    <title>DERBY RACE CARD</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <!-- タイトル画面 (参加者設定) -->
     <div id="titleScreen" class="screen active">
         <div class="container">
-            <h1 class="title">紙競馬</h1>
-            <h2 class="subtitle">ダービーレースカード</h2>
+            <h1 class="title">DERBY RACE CARD</h1>
 
             <div class="input-group">
                 <label for="numParticipants">参加者数</label>
@@ -40,8 +39,8 @@
                 <table id="selectionTable" class="selection-table">
                     <thead>
                         <tr>
-                            <th>枠番号</th>
-                            <th>参加者</th>
+                            <th>番号</th>
+                            <th>名前</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,11 +56,11 @@
     <!-- 結果表示画面 (スクラッチカード) -->
     <div id="resultScreen" class="screen">
         <div class="container">
-            <h2 class="screen-title">結果発表</h2>
+            <h2 class="screen-title">WINNERS & ODDS</h2>
 
             <div class="scratch-container">
                 <div class="scratch-section">
-                    <h3>勝者枠番号</h3>
+                    <h3>勝　者</h3>
                     <div class="scratch-card" id="scratchWinners">
                         <canvas id="canvasWinners"></canvas>
                         <div class="scratch-content" id="winnersContent">
@@ -71,7 +70,7 @@
                 </div>
 
                 <div class="scratch-section">
-                    <h3>配当比率</h3>
+                    <h3>配　当</h3>
                     <div class="scratch-card" id="scratchPayouts">
                         <canvas id="canvasPayouts"></canvas>
                         <div class="scratch-content" id="payoutsContent">

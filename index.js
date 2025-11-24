@@ -85,7 +85,7 @@ function updateParticipantInputs() {
         div.className = 'participant-input';
 
         const label = document.createElement('label');
-        label.textContent = `参加者 ${i + 1}`;
+        label.textContent = `参加者${i + 1}`;
 
         const input = document.createElement('input');
         input.type = 'text';
@@ -251,7 +251,7 @@ function initResultScreen() {
     GameState.winners.forEach(frame => {
         const div = document.createElement('div');
         div.className = 'winner-item';
-        div.textContent = `枠 ${frame}`;
+        div.textContent = `${frame}`;
         winnersContent.appendChild(div);
     });
 
@@ -308,13 +308,6 @@ function initScratchCard(canvasId) {
     }
     ctx.putImageData(imageData, 0, 0);
 
-    // テキスト追加
-    ctx.fillStyle = '#606070';
-    ctx.font = '20px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('こすって削る', canvas.width / 2, canvas.height / 2);
-
     let isScratching = false;
     let lastX = null;
     let lastY = null;
@@ -347,7 +340,7 @@ function initScratchCard(canvasId) {
                 ctx.fill();
 
                 // 削りカスのパーティクル生成（削りながら都度発生）
-                if (Math.random() < 0.2) {
+                if (Math.random() < 0.08) {
                     particles.push({
                         x: px,
                         y: py,
@@ -393,9 +386,9 @@ function initScratchCard(canvasId) {
 
             p.x += p.vx;
             p.y += p.vy;
-            p.vy += 0.15; // 重力
+            p.vy += 0.02; // 重力
             p.vx *= 0.98; // 空気抵抗
-            p.alpha -= 0.015;
+            p.alpha -= 0.005;
             p.rotation += p.rotationSpeed;
 
             if (p.alpha <= 0 || p.y > canvas.height + 10) {
