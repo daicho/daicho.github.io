@@ -284,12 +284,12 @@ body {
     display: flex;
     gap: 20px;
     margin-bottom: 30px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .scratch-section {
     flex: 1;
-    min-width: 250px;
+    min-width: 0;
 }
 
 .scratch-section h3 {
@@ -408,14 +408,6 @@ body {
     .title {
         font-size: 2.5rem;
         letter-spacing: 6px;
-    }
-
-    .scratch-container {
-        flex-direction: column;
-    }
-
-    .scratch-section {
-        min-width: 100%;
     }
 
     .container {
