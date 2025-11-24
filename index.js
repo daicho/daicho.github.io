@@ -326,16 +326,9 @@ function initResultScreen() {
         initScratchCard('canvasPayouts');
     });
 
-    // 既存のボタンを複製して置き換えることでイベントリスナーをクリア
-    const oldBtn = document.getElementById('backToTitleBtn');
-    const newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-    
-    newBtn.addEventListener('click', () => {
-        if (confirm('タイトル画面に戻りますか?')) {
-            showScreen('titleScreen');
-        }
-    });
+    document.getElementById('backToTitleBtn').addEventListener('click', () => {
+        showScreen('titleScreen');
+    }, { once: true });
 }
 
 // スクラッチカードの初期化
