@@ -1180,6 +1180,16 @@ function initScratchCard(canvasId) {
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
     initTitleScreen();
+    
+    // タイトル画面以外ではリロード時に確認
+    window.addEventListener('beforeunload', (e) => {
+        const currentScreen = document.querySelector('.screen.active')?.id;
+
+        if (currentScreen !== 'titleScreen') {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 });
     </script>
 </body>
