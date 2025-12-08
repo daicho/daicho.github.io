@@ -884,8 +884,6 @@ function determineRaceResults() {
         frames.splice(randomIndex, 1);
     }
 
-    GameState.winners.sort((a, b) => a - b);
-
     // 配当比率の決定（合計が1になるように分配）
     // Stars and Bars Methodを使用
     GameState.payouts = {};
