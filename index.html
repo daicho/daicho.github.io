@@ -363,23 +363,6 @@ body {
     box-sizing: border-box;
 }
 
-/* 勝者アイテムのスタイル */
-.scratch-content .winner-item {
-    background: rgba(212, 175, 55, 0.12);
-    margin: 8px 0;
-    border-radius: 8px;
-    color: #c9a42b;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    width: 100%;
-    padding: 15px 20px;
-    box-sizing: border-box;
-}
-
 /* 配当アイテムのスタイル */
 .scratch-content .payout-item {
     background: rgba(212, 175, 55, 0.12);
@@ -427,63 +410,6 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
-}
-
-/* 枠選択情報 */
-.frame-selection-info {
-    margin-bottom: 30px;
-    background: #ffffff;
-    border: 2px solid rgba(201, 164, 43, 0.3);
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.frame-selection-info h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #495057;
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-}
-
-.frame-selection-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-}
-
-.frame-selection-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(212, 175, 55, 0.08);
-    padding: 10px 15px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.frame-selection-item:hover {
-    background: rgba(212, 175, 55, 0.15);
-    transform: translateY(-1px);
-}
-
-.frame-selection-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #c9a42b;
-    min-width: 30px;
-    text-align: center;
-}
-
-.frame-selection-name {
-    font-size: 0.95rem;
-    color: #2c3e50;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 /* レスポンシブ対応 */
@@ -612,13 +538,6 @@ body {
                             <!-- 配当比率が表示される -->
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="frame-selection-info">
-                <h3>選択枠</h3>
-                <div id="frameSelectionList" class="frame-selection-list">
-                    <!-- 枠選択情報が表示される -->
                 </div>
             </div>
 
@@ -1021,27 +940,6 @@ function initResultScreen() {
         }
         payoutsContent.appendChild(div);
     });
-
-    // 枠選択情報の表示
-    const frameSelectionList = document.getElementById('frameSelectionList');
-    frameSelectionList.innerHTML = '';
-    for (let frame = 1; frame <= GameState.numParticipants; frame++) {
-        const participantName = GameState.frameSelections[frame] || '未選択';
-        const div = document.createElement('div');
-        div.className = 'frame-selection-item';
-
-        const frameNumber = document.createElement('span');
-        frameNumber.className = 'frame-selection-number';
-        frameNumber.textContent = frame;
-
-        const participantSpan = document.createElement('span');
-        participantSpan.className = 'frame-selection-name';
-        participantSpan.textContent = participantName;
-
-        div.appendChild(frameNumber);
-        div.appendChild(participantSpan);
-        frameSelectionList.appendChild(div);
-    }
 
     // スクラッチカードの初期化
     requestAnimationFrame(() => {
