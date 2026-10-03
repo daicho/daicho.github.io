@@ -313,6 +313,14 @@ body {
     min-width: 0;
 }
 
+.winner-section {
+    flex: 1.5;
+}
+
+.payout-section {
+    flex: 1;
+}
+
 .scratch-section h3 {
     text-align: center;
     margin-bottom: 15px;
@@ -345,26 +353,80 @@ body {
 .scratch-content {
     position: relative;
     z-index: 1;
-    padding: 30px 20px;
+    padding: 20px 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 300px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.scratch-content .winner-item,
+/* 勝者アイテムのスタイル */
+.scratch-content .winner-item {
+    background: rgba(212, 175, 55, 0.12);
+    margin: 8px 0;
+    border-radius: 8px;
+    color: #c9a42b;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 15px 20px;
+    box-sizing: border-box;
+}
+
+/* 配当アイテムのスタイル */
 .scratch-content .payout-item {
     background: rgba(212, 175, 55, 0.12);
-    padding: 15px 25px;
     margin: 8px 0;
     border-radius: 8px;
     font-size: 1.8rem;
     font-weight: 700;
     color: #c9a42b;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-    min-width: 120px;
+
     text-align: center;
+    width: 100%;
+    padding: 15px 10px;
+    box-sizing: border-box;
+}
+
+/* 勝者アイテムのスタイル */
+.scratch-content .winner-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 175, 55, 0.08);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 6px 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-shadow: none;
+}
+
+.winner-frame-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #c9a42b;
+    min-width: 30px;
+    text-align: center;
+}
+
+.winner-name {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #2c3e50;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
 }
 
 /* 枠選択情報 */
@@ -388,7 +450,7 @@ body {
 
 .frame-selection-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: 1fr;
     gap: 12px;
 }
 
@@ -434,10 +496,6 @@ body {
     .container {
         padding: 20px 15px;
     }
-
-    .frame-selection-list {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
 }
 
 @media (max-width: 480px) {
@@ -451,10 +509,18 @@ body {
         letter-spacing: 2px;
     }
 
-    .scratch-content .winner-item,
+    .scratch-container {
+        gap: 10px;
+    }
+
+    .scratch-content {
+        padding: 15px 10px;
+    }
+
+    /* 配当のみスマホ用に文字サイズ・余白を縮小 */
     .scratch-content .payout-item {
-        font-size: 1.2rem;
-        padding: 12px 20px;
+        font-size: 1.4rem;
+        padding: 12px 5px;
     }
 }
     </style>
@@ -528,17 +594,17 @@ body {
             <h2 class="screen-title">WINNERS & ODDS</h2>
 
             <div class="scratch-container">
-                <div class="scratch-section">
+                <div class="scratch-section winner-section">
                     <h3>勝　者</h3>
                     <div class="scratch-card" id="scratchWinners">
                         <canvas id="canvasWinners"></canvas>
                         <div class="scratch-content" id="winnersContent">
-                            <!-- 勝者枠番号が表示される -->
+                            <!-- 勝者枠番号と名前が表示される -->
                         </div>
                     </div>
                 </div>
 
-                <div class="scratch-section">
+                <div class="scratch-section payout-section">
                     <h3>配　当</h3>
                     <div class="scratch-card" id="scratchPayouts">
                         <canvas id="canvasPayouts"></canvas>
@@ -600,7 +666,7 @@ function initTitleScreen() {
             GameState.numParticipants = data.numParticipants;
             GameState.numWinners = data.numWinners;
             GameState.participants = data.participants || [];
-            
+
             // 保存された参加者をallParticipantsに復元
             GameState.allParticipants = {};
             GameState.participants.forEach((name, index) => {
@@ -626,7 +692,7 @@ function initTitleScreen() {
     document.getElementById('numParticipants').addEventListener('change', (e) => {
         // 入力欄から現在の値を取得してGameStateに保存
         saveCurrentParticipantInputs();
-        
+
         GameState.numParticipants = parseInt(e.target.value);
         updateWinnersSelect();
         updateParticipantInputs();
@@ -639,7 +705,7 @@ function initTitleScreen() {
     document.getElementById('startGameBtn').addEventListener('click', () => {
         // 最新の入力内容を保存
         saveCurrentParticipantInputs();
-        
+
         // LocalStorageに保存
         try {
             const data = {
@@ -662,19 +728,19 @@ function initTitleScreen() {
 function updateWinnersSelect() {
     const numWinnersSelect = document.getElementById('numWinners');
     numWinnersSelect.innerHTML = '';
-    
+
     for (let i = 1; i <= GameState.numParticipants; i++) {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
         numWinnersSelect.appendChild(option);
     }
-    
+
     // 現在の勝者枠数が新しい参加者数を超える場合は調整
     if (GameState.numWinners > GameState.numParticipants) {
         GameState.numWinners = GameState.numParticipants;
     }
-    
+
     numWinnersSelect.value = GameState.numWinners;
 }
 
@@ -695,14 +761,14 @@ function saveCurrentParticipantInputs() {
 // 参加者名入力欄の更新
 function updateParticipantInputs() {
     const tbody = document.getElementById('participantNames');
-    
+
     // 入力欄の数が変わる場合のみ再生成
     const currentInputCount = tbody.querySelectorAll('tr').length;
     if (currentInputCount === GameState.numParticipants) {
         // 入力欄の数が同じ場合は何もしない（入力内容を保持）
         return;
     }
-    
+
     tbody.innerHTML = '';
     GameState.participants = [];
 
@@ -725,14 +791,14 @@ function updateParticipantInputs() {
             const index = parseInt(e.target.dataset.index);
             const value = e.target.value.trim();
             GameState.participants[index] = value;
-            
+
             // allParticipantsにも保存
             if (value) {
                 GameState.allParticipants[index] = value;
             } else {
                 delete GameState.allParticipants[index];
             }
-            
+
             checkDuplicateNames();
             checkAllParticipantsEntered();
         });
@@ -754,7 +820,7 @@ function checkDuplicateNames() {
     const inputs = document.querySelectorAll('#participantNames input');
     const nameCount = {};
     const duplicateNames = new Set();
-    
+
     // 入力された名前をカウント（空文字列は除外）
     inputs.forEach(input => {
         const name = input.value.trim();
@@ -765,7 +831,7 @@ function checkDuplicateNames() {
             }
         }
     });
-    
+
     // 重複している入力欄にエラースタイルを適用
     inputs.forEach(input => {
         const name = input.value.trim();
@@ -775,7 +841,7 @@ function checkDuplicateNames() {
             input.classList.remove('duplicate-error');
         }
     });
-    
+
     return duplicateNames.size === 0;
 }
 
@@ -921,7 +987,21 @@ function initResultScreen() {
     GameState.winners.forEach(frame => {
         const div = document.createElement('div');
         div.className = 'winner-item';
-        div.textContent = `${frame}`;
+
+        const participantName = GameState.frameSelections[frame] || '未選択';
+
+        // 勝者の枠番号
+        const frameSpan = document.createElement('span');
+        frameSpan.className = 'winner-frame-number';
+        frameSpan.textContent = frame;
+
+        // 勝者の名前
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'winner-name';
+        nameSpan.textContent = participantName;
+
+        div.appendChild(frameSpan);
+        div.appendChild(nameSpan);
         winnersContent.appendChild(div);
     });
 
@@ -949,15 +1029,15 @@ function initResultScreen() {
         const participantName = GameState.frameSelections[frame] || '未選択';
         const div = document.createElement('div');
         div.className = 'frame-selection-item';
-        
+
         const frameNumber = document.createElement('span');
         frameNumber.className = 'frame-selection-number';
         frameNumber.textContent = frame;
-        
+
         const participantSpan = document.createElement('span');
         participantSpan.className = 'frame-selection-name';
         participantSpan.textContent = participantName;
-        
+
         div.appendChild(frameNumber);
         div.appendChild(participantSpan);
         frameSelectionList.appendChild(div);
@@ -1180,7 +1260,7 @@ function initScratchCard(canvasId) {
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
     initTitleScreen();
-    
+
     // タイトル画面以外ではリロード時に確認
     window.addEventListener('beforeunload', (e) => {
         const currentScreen = document.querySelector('.screen.active')?.id;
