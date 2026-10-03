@@ -835,17 +835,30 @@ function updateSelectionOptions() {
 
     selects.forEach(select => {
         const currentValue = select.value;
-        const frame = parseInt(select.dataset.frame);
+        
+        // 選択肢を一度すべてリセット（削除）する
+        select.innerHTML = '';
+        
+        // デフォルトオプションを再追加
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '選択してください';
+        select.appendChild(defaultOption);
 
-        Array.from(select.options).forEach(option => {
-            if (option.value === '') return;
-
-            if (selectedNames.has(option.value) && option.value !== currentValue) {
-                option.disabled = true;
-                option.style.display = 'none';
-            } else {
-                option.disabled = false;
-                option.style.display = '';
+        // 参加者リストから、選択可能な人だけをオプションとして追加
+        GameState.participants.forEach(name => {
+            // 「まだ誰にも選ばれていない」または「この枠で現在選んでいる人」の場合のみ追加
+            if (!selectedNames.has(name) || name === currentValue) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                
+                // 現在選択中の値であれば選択状態を維持
+                if (name === currentValue) {
+                    option.selected = true;
+                }
+                
+                select.appendChild(option);
             }
         });
     });
